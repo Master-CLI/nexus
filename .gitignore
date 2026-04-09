@@ -1,0 +1,33 @@
+# Build output
+build/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+internal/embed/assets/
+internal/embed/build-meta.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp / logs
+tmp-headless/
+*.log
+
+# Go
+vendor/
+
+# Config with secrets (the example file is tracked)
+nexus-config.local.yaml

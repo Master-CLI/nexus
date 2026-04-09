@@ -1,0 +1,114 @@
+/* Master-Nexus dark theme for flexlayout-react */
+
+.flexlayout__layout {
+  --color-text: #e5e5e5;
+  --color-background: #0a0a0f;
+  --color-base: #0a0a0f;
+  --color-1: #111118;
+  --color-2: #16161e;
+  --color-3: #1e1e2a;
+  --color-4: #2a2a3a;
+  --color-5: #3a3a4a;
+  --color-6: #4a4a5a;
+
+  --color-drag1: rgba(96, 165, 250, 0.7);
+  --color-drag2: rgba(96, 165, 250, 0.5);
+  --color-drag1-background: rgba(96, 165, 250, 0.08);
+  --color-drag2-background: rgba(96, 165, 250, 0.06);
+
+  --font-size: 12px;
+  --font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+
+  --color-overflow: #606070;
+  --color-icon: #606070;
+
+  --color-tabset-background: #111118;
+  --color-tabset-background-selected: #111118;
+  --color-tabset-background-maximized: #16161e;
+  --color-tabset-divider-line: #2a2a3a;
+  --color-tabset-header-background: #111118;
+  --color-tabset-header: #e5e5e5;
+
+  --color-border-tab-content: #0a0a0f;
+  --color-border-background: #111118;
+  --color-border-divider-line: #2a2a3a;
+
+  --color-tab-content: #0a0a0f;
+  --color-tab-selected: #e5e5e5;
+  --color-tab-selected-background: #1e1e2a;
+  --color-tab-unselected: #666;
+  --color-tab-unselected-background: transparent;
+  --color-tab-textbox: #e5e5e5;
+  --color-tab-textbox-background: #1e1e2a;
+
+  --color-splitter: #16161e;
+  --color-splitter-hover: #3a3a4a;
+  --color-splitter-drag: #3b82f6;
+
+  --color-drag-rect-border: #3a3a4a;
+  --color-drag-rect-background: #111118;
+  --color-drag-rect: #e5e5e5;
+
+  --color-popup-border: #3a3a4a;
+  --color-popup-unselected: #e5e5e5;
+  --color-popup-unselected-background: #111118;
+  --color-popup-selected: #e5e5e5;
+  --color-popup-selected-background: #2a2a3a;
+
+  --color-edge-marker: #3a3a4a;
+  --color-toolbar-button-hover: #2a2a3a;
+}
+
+.flexlayout__tabset-selected,
+.flexlayout__tabset-maximized {
+  background-image: none;
+}
+
+.flexlayout__tabset_tabbar_outer {
+  background-color: #0e0e16;
+  min-height: 32px;
+}
+
+.flexlayout__tab_button {
+  padding: 4px 10px !important;
+  min-height: 28px;
+}
+
+.flexlayout__tab_button--selected {
+  border-bottom: 2px solid #60a5fa;
+  background-color: #16161e;
+}
+
+.flexlayout__tab_button_trailing {
+  padding: 4px !important;
+  margin-left: 4px;
+}
+
+.flexlayout__splitter_drag {
+  background-color: rgba(59, 130, 246, 0.3);
+}
+
+.flexlayout__tab {
+  background-color: #0a0a0f;
+}
+
+.flexlayout__tabset_header {
+  box-shadow: none;
+  border-bottom: 1px solid #2a2a3a;
+}
+
+.flexlayout__tab_moveable {
+  overflow: hidden;
+}
+
+.flexlayout__tab_button_trailing svg {
+  fill: #555;
+}
+
+.flexlayout__tab_button_trailing:hover svg {
+  fill: #e5e5e5;
+}
+
+.flexlayout__popup_menu_container {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}

@@ -1,0 +1,22 @@
+mcp_base_port: 9400
+# work_dir: ""  # defaults to current directory
+max_sessions: 8
+
+pty:
+  # shell: auto-detected (powershell on Windows, $SHELL on Unix)
+  cols: 120
+  rows: 30
+
+capture:
+  idle_timeout_sec: 5
+  agent_idle_timeout_sec: 15
+
+# mcp:
+#   auth_enabled: false
+#   bearer_token: ""  # auto-generated if auth_enabled and empty
+
+# External MCP servers available to spawned agents.
+# Agents can request these by name in create_session(mcp_servers: [...]).
+# external_mcp_servers:
+#   my-rag: "http://localhost:9090/mcp"
+#   my-browser: "http://localhost:9500/mcp"

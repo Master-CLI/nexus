@@ -1,0 +1,288 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0a0a0f;
+  color: #e5e5e5;
+  font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+}
+
+/* ═══ Root layout ═══ */
+.nexus-root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.nexus-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  height: 36px;
+  background: #0e0e16;
+  border-bottom: 1px solid #1e1e2e;
+  font-size: 12px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1001;
+}
+
+.nexus-title {
+  font-weight: 600;
+  color: #60a5fa;
+  margin-right: 4px;
+  white-space: nowrap;
+}
+
+.nexus-toolbar-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.nexus-info {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #555;
+  font-size: 11px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+}
+.dot.disconnected { background: #f87171; }
+
+.nexus-layout {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.nexus-layout .flexlayout__layout {
+  position: absolute;
+  inset: 0;
+}
+
+/* ═══ Status bar (bottom) ═══ */
+.nexus-statusbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  height: 24px;
+  background: #0e0e16;
+  border-top: 1px solid #1e1e2e;
+  font-size: 11px;
+  color: #666;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.nexus-sb-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.sb-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.sb-dot.ok { background: #4ade80; }
+.sb-dot.warn { background: #d29922; }
+.sb-dot.err { background: #f87171; }
+
+.nexus-sb-session {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 6px;
+  background: #111118;
+  border: 1px solid #1e1e2e;
+  border-radius: 3px;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.sb-busy {
+  color: #f59e0b;
+  font-size: 9px;
+  margin-left: 2px;
+}
+
+.nexus-sb-mcp {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  color: #888;
+}
+
+.nexus-sb-sep {
+  width: 1px;
+  height: 12px;
+  background: #2a2a3a;
+}
+
+.nexus-sb-spacer {
+  flex: 1;
+}
+
+/* ═══ Add buttons (toolbar) ═══ */
+.nexus-add-btn {
+  padding: 4px 10px;
+  border: 1px solid #2a2a3a;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  position: relative;
+  z-index: 20;
+  font-weight: 600;
+  font-family: inherit;
+  color: #777;
+  background: #111118;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  line-height: 1;
+}
+.nexus-add-btn:hover { background: #1e1e2a; color: #e5e5e5; border-color: #3a3a4a; }
+.nexus-add-btn:active { background: #2a2a3a; }
+
+.nexus-add-btn.btn-claude       { color: #f59e0b; border-color: #3a2a10; }
+.nexus-add-btn.btn-claude:hover { background: #2a2010; color: #fbbf24; border-color: #f59e0b44; }
+.nexus-add-btn.btn-codex        { color: #10b981; border-color: #102a20; }
+.nexus-add-btn.btn-codex:hover  { background: #102a20; color: #34d399; border-color: #10b98144; }
+.nexus-add-btn.btn-gemini       { color: #818cf8; border-color: #1a1a30; }
+.nexus-add-btn.btn-gemini:hover { background: #1a1a30; color: #a5b4fc; border-color: #818cf844; }
+
+/* ═══ Loading indicator ═══ */
+.nexus-loading {
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
+}
+
+.nexus-spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #333;
+  border-top-color: #60a5fa;
+  border-radius: 50%;
+  animation: nexus-spin 0.8s linear infinite;
+}
+
+@keyframes nexus-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ═══ Right-click context menu ═══ */
+.nexus-ctx-menu {
+  position: fixed;
+  z-index: 9999;
+  background: #1a1a2e;
+  border: 1px solid #2e2e4a;
+  border-radius: 6px;
+  padding: 4px 0;
+  min-width: 140px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+
+.nexus-ctx-menu button {
+  display: block;
+  width: 100%;
+  padding: 6px 16px;
+  border: none;
+  background: none;
+  color: #e5e5e5;
+  font-size: 12px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.nexus-ctx-menu button:hover {
+  background: #2a2a4a;
+}
+
+.nexus-ctx-menu hr {
+  border: none;
+  border-top: 1px solid #2e2e4a;
+  margin: 4px 0;
+}
+
+/* ═══ Terminal search bar ═══ */
+.nexus-search-bar {
+  position: absolute;
+  top: 4px;
+  right: 12px;
+  z-index: 100;
+  display: flex;
+  gap: 4px;
+  background: #1a1a2e;
+  border: 1px solid #2e2e4a;
+  border-radius: 4px;
+  padding: 4px 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.nexus-search-bar input {
+  width: 200px;
+  padding: 2px 6px;
+  border: 1px solid #2e2e4a;
+  border-radius: 3px;
+  background: #0a0a0f;
+  color: #e5e5e5;
+  font-size: 12px;
+  font-family: inherit;
+  outline: none;
+}
+
+.nexus-search-bar input:focus {
+  border-color: #60a5fa;
+}
+
+.nexus-search-bar button {
+  padding: 2px 8px;
+  border: none;
+  background: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.nexus-search-bar button:hover { color: #e5e5e5; }
+
+/* ═══ Connection toast ═══ */
+.nexus-toast {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  z-index: 9999;
+  padding: 8px 16px;
+  background: #2a1a1a;
+  border: 1px solid #f8717144;
+  border-radius: 6px;
+  color: #f87171;
+  font-size: 12px;
+  animation: nexus-toast-in 0.3s ease;
+}
+
+@keyframes nexus-toast-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
