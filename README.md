@@ -2,6 +2,19 @@
 
 Multi-agent terminal orchestration hub. Spawn, monitor, and coordinate AI coding agents (Claude, Codex, Gemini) through a unified MCP interface with profile-based automation.
 
+<!-- TODO: replace with actual recording
+## Demo
+
+### Create an agent and get a response
+![Create agent demo](docs/demo-hero.gif)
+
+### Multi-agent broadcast
+![Multi-agent broadcast](docs/demo-broadcast.gif)
+
+### Profile-based automation
+![Profile automation](docs/demo-profile.gif)
+-->
+
 ## Features
 
 - **Multi-agent sessions** — spawn Claude, Codex, Gemini, or plain shell terminals in managed PTY sessions
