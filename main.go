@@ -12,9 +12,9 @@ import (
 	"path/filepath"
 	"syscall"
 
-	"github.com/anthropic/nexus/internal/config"
-	nexusmcp "github.com/anthropic/nexus/internal/mcp"
-	"github.com/anthropic/nexus/internal/session"
+	"github.com/Master-CLI/nexus/internal/config"
+	nexusmcp "github.com/Master-CLI/nexus/internal/mcp"
+	"github.com/Master-CLI/nexus/internal/session"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 )

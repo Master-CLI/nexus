@@ -1,6 +1,6 @@
-module github.com/anthropic/nexus
+module github.com/Master-CLI/nexus
 
-go 1.26.1
+go 1.25
 
 require (
 	github.com/UserExistsError/conpty v0.1.4

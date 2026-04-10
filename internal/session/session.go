@@ -445,6 +445,13 @@ func (r *Registry) ClearGuard(callerID, targetID string) {
 	}
 }
 
+// GeminiInShellMode checks if a Gemini session appears to be in shell mode
+// by examining recent terminal output from the session log.
+func (r *Registry) GeminiInShellMode(sessionID string) bool {
+	logTail := r.readLogTail(sessionID, 30)
+	return GeminiLooksInShellMode(logTail)
+}
+
 // readLogTail reads the last N lines from a session's log file.
 func (r *Registry) readLogTail(sessionID string, lines int) string {
 	if r.logDir == "" {

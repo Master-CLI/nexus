@@ -18,6 +18,58 @@ func EnterKey(agentType AgentType) []byte {
 	return []byte("\r")
 }
 
+// PreInputEscape returns an escape sequence to send before writing text input
+// to agents that need mode correction before receiving PTY input.
+// Returns nil — callers should use GeminiLooksInShellMode for state-aware handling.
+//
+// Previously sent Escape for Gemini unconditionally, but Escape is a toggle:
+// in normal chat mode it ENTERS shell mode (the opposite of what we want).
+// Now callers check the terminal state first and only send Escape when needed.
+func PreInputEscape(agentType AgentType) []byte {
+	return nil
+}
+
+// GeminiLooksInShellMode returns true if the terminal text suggests the Gemini CLI
+// is currently in shell mode (activated by Escape or '!' key). Callers should
+// send Escape (\x1b) to exit shell mode before writing chat input.
+func GeminiLooksInShellMode(text string) bool {
+	clean := normalizeTerminalText(text)
+	tail := clean
+	if len(tail) > 1000 {
+		tail = tail[len(tail)-1000:]
+	}
+	lower := strings.ToLower(tail)
+	return strings.Contains(lower, "shell mode enabled") ||
+		strings.Contains(lower, "type your shell command")
+}
+
+// writeGeminiText writes text to a Gemini session's PTY using bracketed paste
+// mode to prevent the TUI from interpreting rapid input as keyboard shortcuts
+// (which triggers shell mode). Bubbletea supports bracketed paste natively.
+func writeGeminiText(s *Session, text string) error {
+	// Bracketed paste: \e[200~ ... \e[201~
+	if _, err := s.PTY.Write([]byte("\x1b[200~")); err != nil {
+		return err
+	}
+	if _, err := s.PTY.Write([]byte(text)); err != nil {
+		return err
+	}
+	if _, err := s.PTY.Write([]byte("\x1b[201~")); err != nil {
+		return err
+	}
+	return nil
+}
+
+// WriteAgentText writes text to a session's PTY, using bracketed paste for
+// Gemini to prevent shell mode activation on rapid input.
+func WriteAgentText(s *Session, text string) error {
+	if s.AgentType == AgentGemini {
+		return writeGeminiText(s, text)
+	}
+	_, err := s.PTY.Write([]byte(text))
+	return err
+}
+
 // Common shell and agent prompt patterns (end of line).
 var promptPatterns = []*regexp.Regexp{
 	regexp.MustCompile(`(?m)^PS [A-Z]:\\[^>]*> $`),                    // PowerShell
@@ -45,6 +97,8 @@ var (
 	codexWorkingLineRe   = regexp.MustCompile(`^[•◦] Working\b.*$`)
 	codexTipLineRe       = regexp.MustCompile(`^(?:› )?Use /skills\b.*$`)
 	geminiPromptLineRe   = regexp.MustCompile(`^\*\s+Type your message or @path/to/file$`)
+	geminiShellModeRe    = regexp.MustCompile(`^shell mode enabled`)
+	geminiShellPromptRe  = regexp.MustCompile(`^!\s+Type your shell command$`)
 	geminiShortcutsRe    = regexp.MustCompile(`^\? for shortcuts$`)
 	geminiStatusLineRe   = regexp.MustCompile(`^[⠁-⣿]\s+(?:Thinking|Processing|Analyzing|Formulating)\b.*$`)
 	geminiReplyLineRe    = regexp.MustCompile(`^✦\s+.+$`)
@@ -248,6 +302,10 @@ func filterGeminiNoise(lines []string) string {
 		case geminiBorderLineRe.MatchString(compact):
 			appendBreak()
 		case geminiPromptLineRe.MatchString(compact):
+			appendBreak()
+		case geminiShellModeRe.MatchString(compact):
+			appendBreak()
+		case geminiShellPromptRe.MatchString(compact):
 			appendBreak()
 		case geminiShortcutsRe.MatchString(compact):
 			appendBreak()
@@ -568,6 +626,10 @@ func isGeminiUILine(line string) bool {
 		return true
 	case geminiPromptLineRe.MatchString(line):
 		return true
+	case geminiShellModeRe.MatchString(line):
+		return true
+	case geminiShellPromptRe.MatchString(line):
+		return true
 	case geminiShortcutsRe.MatchString(line):
 		return true
 	case geminiStatusLineRe.MatchString(line):
@@ -744,9 +806,9 @@ func CaptureOutput(ctx context.Context, s *Session, command string, idleTimeout 
 	ch := s.StartCapture()
 	defer s.StopCapture()
 
-	// Split write: text first, then Enter separately.
+	// Split write: text first (bracketed paste for Gemini), then Enter separately.
 	text := strings.TrimRight(command, "\r\n")
-	if _, err := s.PTY.Write([]byte(text)); err != nil {
+	if err := WriteAgentText(s, text); err != nil {
 		return "", err
 	}
 	time.Sleep(150 * time.Millisecond)

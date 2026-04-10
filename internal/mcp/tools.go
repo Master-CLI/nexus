@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/anthropic/nexus/internal/session"
+	"github.com/Master-CLI/nexus/internal/session"
 	"github.com/mark3labs/mcp-go/mcp"
 	mcpserver "github.com/mark3labs/mcp-go/server"
 )
@@ -353,8 +353,8 @@ func (s *Server) toolCreateSession(ctx context.Context, req mcp.CallToolRequest)
 			return errorResult(fmt.Sprintf("Session %q destroyed while waiting for prompt.", sessionID)), nil
 		}
 
-		// Split write: text first, then Enter separately (TUI compatibility).
-		sess.PTY.Write([]byte(initMessage))
+		// Split write: text first (bracketed paste for Gemini), then Enter separately.
+		session.WriteAgentText(sess, initMessage)
 		time.Sleep(150 * time.Millisecond)
 		sess.PTY.Write(session.EnterKey(sess.AgentType))
 		log.Printf("[mcp] init_message sent to %q (%d chars)", sessionID, len(initMessage))
@@ -436,6 +436,12 @@ func (s *Server) toolAskPeer(ctx context.Context, req mcp.CallToolRequest) (*mcp
 	idle := s.idleTimeout
 	if sess.AgentType != session.AgentShell {
 		idle = s.agentIdleTimeout
+	}
+
+	// If Gemini is stuck in shell mode, send Escape to exit before asking.
+	if sess.AgentType == session.AgentGemini && s.registry.GeminiInShellMode(target) {
+		sess.PTY.Write([]byte("\x1b"))
+		time.Sleep(200 * time.Millisecond)
 	}
 
 	// Gemini CLI needs \n; PowerShell/Claude use \r. Use \r\n for broad compatibility.
@@ -605,8 +611,21 @@ func (s *Server) toolSendToPeer(ctx context.Context, req mcp.CallToolRequest) (*
 		return errorResult(fmt.Sprintf("Read Guard: %v", err)), nil
 	}
 
-	// Write the message text first (paste).
-	if err := s.registry.WriteToSession(target, []byte(message)); err != nil {
+	// Look up session for agent-type-specific handling.
+	sess := s.registry.Get(target)
+
+	// If Gemini is in shell mode, send Escape to switch back to chat mode before input.
+	if sess != nil && sess.AgentType == session.AgentGemini && s.registry.GeminiInShellMode(target) {
+		s.registry.WriteToSession(target, []byte("\x1b"))
+		time.Sleep(200 * time.Millisecond)
+	}
+
+	// Write the message text (bracketed paste for Gemini to avoid shell mode).
+	if sess != nil {
+		if err := session.WriteAgentText(sess, message); err != nil {
+			return errorResult(fmt.Sprintf("Failed to send: %v", err)), nil
+		}
+	} else if err := s.registry.WriteToSession(target, []byte(message)); err != nil {
 		return errorResult(fmt.Sprintf("Failed to send: %v", err)), nil
 	}
 	// Wait for the terminal to process the pasted text before sending Enter.
@@ -619,7 +638,6 @@ func (s *Server) toolSendToPeer(ctx context.Context, req mcp.CallToolRequest) (*
 	}
 	time.Sleep(time.Duration(delay) * time.Millisecond)
 	// Send agent-appropriate Enter key.
-	sess := s.registry.Get(target)
 	if sess != nil {
 		s.registry.WriteToSession(target, session.EnterKey(sess.AgentType))
 	} else {

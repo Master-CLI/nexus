@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/anthropic/nexus/internal/config"
-	"github.com/anthropic/nexus/internal/session"
+	"github.com/Master-CLI/nexus/internal/config"
+	"github.com/Master-CLI/nexus/internal/session"
 	mcpserver "github.com/mark3labs/mcp-go/server"
 )
 

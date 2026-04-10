@@ -31,3 +31,14 @@ vendor/
 
 # Config with secrets (the example file is tracked)
 nexus-config.local.yaml
+
+# Environment
+.env
+.env.*
+
+# TypeScript build cache
+*.tsbuildinfo
+
+# Go workspace
+go.work
+go.work.sum

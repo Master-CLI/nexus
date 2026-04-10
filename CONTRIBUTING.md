@@ -15,7 +15,7 @@ Thank you for your interest in contributing!
 
 ```bash
 # Clone
-git clone https://github.com/anthropic/nexus.git
+git clone https://github.com/Master-CLI/nexus.git
 cd nexus
 
 # Backend only (headless mode)
