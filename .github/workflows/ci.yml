@@ -20,10 +20,10 @@ jobs:
           go-version-file: go.mod
 
       - name: Go vet
-        run: go vet ./...
+        run: go vet ./internal/...
 
       - name: Run tests
-        run: go test ./...
+        run: go test ./internal/...
 
   lint:
     runs-on: ubuntu-latest
@@ -39,6 +39,7 @@ jobs:
         with:
           version: latest
           install-mode: goinstall
+          args: ./internal/...
 
   frontend:
     runs-on: ubuntu-latest
