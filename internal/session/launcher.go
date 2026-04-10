@@ -139,18 +139,6 @@ func writeClaudeBootstrapFile(dir, workDir string) (string, error) {
 	return path, nil
 }
 
-func prepareCLIConfigHome(dir string) (home, appData, localAppData string, err error) {
-	home = filepath.Join(dir, "home")
-	appData = filepath.Join(dir, "appdata", "Roaming")
-	localAppData = filepath.Join(dir, "appdata", "Local")
-	for _, p := range []string{home, appData, localAppData} {
-		if mkErr := os.MkdirAll(p, 0755); mkErr != nil {
-			return "", "", "", mkErr
-		}
-	}
-	return home, appData, localAppData, nil
-}
-
 func sanitizeLaunchLabel(label string) string {
 	label = strings.TrimSpace(label)
 	if label == "" {
@@ -272,15 +260,6 @@ func geminiAllowedMCPFlags(selected []string) string {
 		parts = append(parts, fmt.Sprintf(` --allowed-mcp-server-names %s`, name))
 	}
 	return strings.Join(parts, "")
-}
-
-// gatewayMCPEndpoint converts SSE URL to Streamable HTTP URL for Codex/Gemini.
-func gatewayMCPEndpoint(sseURL string) string {
-	// http://localhost:9200/sse → http://localhost:9200/mcp
-	if len(sseURL) > 4 && sseURL[len(sseURL)-4:] == "/sse" {
-		return sseURL[:len(sseURL)-4] + "/mcp"
-	}
-	return sseURL
 }
 
 // BuildCommand returns the command string, working directory, and launch dir

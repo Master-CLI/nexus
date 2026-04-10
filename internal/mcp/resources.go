@@ -3,7 +3,6 @@ package mcp
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 
 	"github.com/mark3labs/mcp-go/mcp"
 	mcpserver "github.com/mark3labs/mcp-go/server"
@@ -31,7 +30,7 @@ func (s *Server) resourceSessions(ctx context.Context, req mcp.ReadResourceReque
 		mcp.TextResourceContents{
 			URI:      "nexus://sessions",
 			MIMEType: "application/json",
-			Text:     fmt.Sprintf("%s", data),
+			Text:     string(data),
 		},
 	}, nil
 }

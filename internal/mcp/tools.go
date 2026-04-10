@@ -354,9 +354,9 @@ func (s *Server) toolCreateSession(ctx context.Context, req mcp.CallToolRequest)
 		}
 
 		// Split write: text first (bracketed paste for Gemini), then Enter separately.
-		session.WriteAgentText(sess, initMessage)
+		_ = session.WriteAgentText(sess, initMessage)
 		time.Sleep(150 * time.Millisecond)
-		sess.PTY.Write(session.EnterKey(sess.AgentType))
+		_, _ = sess.PTY.Write(session.EnterKey(sess.AgentType))
 		log.Printf("[mcp] init_message sent to %q (%d chars)", sessionID, len(initMessage))
 	}
 
@@ -440,7 +440,7 @@ func (s *Server) toolAskPeer(ctx context.Context, req mcp.CallToolRequest) (*mcp
 
 	// If Gemini is stuck in shell mode, send Escape to exit before asking.
 	if sess.AgentType == session.AgentGemini && s.registry.GeminiInShellMode(target) {
-		sess.PTY.Write([]byte("\x1b"))
+		_, _ = sess.PTY.Write([]byte("\x1b"))
 		time.Sleep(200 * time.Millisecond)
 	}
 
@@ -616,7 +616,7 @@ func (s *Server) toolSendToPeer(ctx context.Context, req mcp.CallToolRequest) (*
 
 	// If Gemini is in shell mode, send Escape to switch back to chat mode before input.
 	if sess != nil && sess.AgentType == session.AgentGemini && s.registry.GeminiInShellMode(target) {
-		s.registry.WriteToSession(target, []byte("\x1b"))
+		_ = s.registry.WriteToSession(target, []byte("\x1b"))
 		time.Sleep(200 * time.Millisecond)
 	}
 
@@ -639,9 +639,9 @@ func (s *Server) toolSendToPeer(ctx context.Context, req mcp.CallToolRequest) (*
 	time.Sleep(time.Duration(delay) * time.Millisecond)
 	// Send agent-appropriate Enter key.
 	if sess != nil {
-		s.registry.WriteToSession(target, session.EnterKey(sess.AgentType))
+		_ = s.registry.WriteToSession(target, session.EnterKey(sess.AgentType))
 	} else {
-		s.registry.WriteToSession(target, []byte("\r"))
+		_ = s.registry.WriteToSession(target, []byte("\r"))
 	}
 
 	// Clear guard after send — must read again before next send.

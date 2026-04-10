@@ -91,7 +91,7 @@ func (p *PTY) Close() error {
 		go func() {
 			// Try graceful termination first.
 			if p.cmd.Process != nil {
-				p.cmd.Process.Signal(syscall.SIGTERM)
+				_ = p.cmd.Process.Signal(syscall.SIGTERM)
 			}
 			err = p.ptmx.Close()
 			close(done)
@@ -101,7 +101,7 @@ func (p *PTY) Close() error {
 		case <-time.After(5 * time.Second):
 			log.Printf("[pty] Close() timed out after 5s, killing child process")
 			if p.cmd.Process != nil {
-				p.cmd.Process.Kill()
+				_ = p.cmd.Process.Kill()
 			}
 		}
 	})

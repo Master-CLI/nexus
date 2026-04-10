@@ -75,7 +75,7 @@ func (s *Scheduler) destroySessionsByName(name string) {
 	for _, info := range s.registry.ListDetails() {
 		if info.Name == name {
 			log.Printf("[scheduler] destroying session %q (%s)", info.ID, info.Name)
-			s.registry.Destroy(info.ID)
+			_ = s.registry.Destroy(info.ID)
 		}
 	}
 }
@@ -122,7 +122,7 @@ func (s *Scheduler) launchProfile(p *AgentProfile) (string, error) {
 			if sid, ok := s.running[p.Name]; ok && sid == sessionID {
 				delete(s.running, p.Name)
 				s.mu.Unlock()
-				s.registry.Destroy(sessionID)
+				_ = s.registry.Destroy(sessionID)
 				log.Printf("[scheduler] profile %q reached max_runtime (%ds), terminated", p.Name, p.Limits.MaxRuntimeSec)
 			} else {
 				s.mu.Unlock()
@@ -170,7 +170,7 @@ func (s *Scheduler) loopMonitor(p *AgentProfile, sessionID string) {
 		s.mu.Unlock()
 
 		if sess != nil {
-			s.registry.Destroy(sessionID)
+			_ = s.registry.Destroy(sessionID)
 		}
 
 		time.Sleep(restartDelay)

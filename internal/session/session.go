@@ -124,7 +124,7 @@ func NewRegistry(emitFn func(string, any), maxSessions int) *Registry {
 	home, err := os.UserHomeDir()
 	if err == nil {
 		logDir = filepath.Join(home, ".nexus", "logs")
-		os.MkdirAll(logDir, 0755)
+		_ = os.MkdirAll(logDir, 0755)
 	}
 
 	return &Registry{
@@ -313,7 +313,7 @@ func (r *Registry) Shutdown() {
 	}
 	r.mu.RUnlock()
 	for _, id := range ids {
-		r.Destroy(id)
+		_ = r.Destroy(id)
 	}
 }
 
@@ -493,7 +493,7 @@ func (r *Registry) readLoop(s *Session) {
 			// Write to session log.
 			s.logMu.Lock()
 			if s.logFile != nil {
-				s.logFile.WriteString(str)
+				_, _ = s.logFile.WriteString(str)
 			}
 			s.logMu.Unlock()
 

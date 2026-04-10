@@ -100,6 +100,6 @@ func Load(path string) (*Config, error) {
 // generateToken creates a random 32-char hex bearer token.
 func generateToken() string {
 	b := make([]byte, 16)
-	rand.Read(b)
+	_, _ = rand.Read(b)
 	return hex.EncodeToString(b)
 }
