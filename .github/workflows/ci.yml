@@ -35,11 +35,7 @@ jobs:
           go-version-file: go.mod
 
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v6
-        with:
-          version: latest
-          install-mode: goinstall
-          args: ./internal/...
+        run: go run github.com/golangci/golangci-lint/cmd/golangci-lint@latest run ./internal/...
 
   frontend:
     runs-on: ubuntu-latest
